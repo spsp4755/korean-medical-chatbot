@@ -1,0 +1,141 @@
+# 한국어 의료 상담 챗봇 프로젝트 설정
+
+# 데이터 설정
+data:
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  splits_path: "data/splits"
+  
+  # 데이터셋 구성
+  datasets:
+    baseline_validation:
+      - "인터뷰_진행_멀티턴_데이터"
+      - "국어_교과_지문형_문제_데이터"
+    
+    optimization:
+      - "수학_교과_문제_풀이과정_데이터"
+    
+    medical_domain:
+      - "필수의료_의학지식_데이터"
+      - "전문_의학지식_데이터"
+  
+  # 데이터 분할 비율
+  train_ratio: 0.8
+  val_ratio: 0.1
+  test_ratio: 0.1
+
+# 모델 설정
+model:
+  # 베이스 모델 선택
+  base_model_name: "beomi/KULLM-2-7B"  # 또는 "EleutherAI/polyglot-ko-12.8b"
+  
+  # 모델 저장 경로
+  model_path: "models"
+  baseline_path: "models/baseline"
+  optimized_path: "models/optimized"
+  checkpoint_path: "models/checkpoints"
+  
+  # 모델 하이퍼파라미터
+  max_length: 2048
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+
+# 최적화 설정
+optimization:
+  # Quantization 설정
+  quantization:
+    enabled: true
+    method: "int8"  # int8, int4, dynamic
+    calibration_samples: 1000
+  
+  # Pruning 설정
+  pruning:
+    enabled: true
+    sparsity: 0.2  # 20% 가중치 제거
+    method: "magnitude"  # magnitude, gradient
+  
+  # Knowledge Distillation 설정
+  knowledge_distillation:
+    enabled: true
+    teacher_model: "beomi/KULLM-2-7B"
+    student_model: "beomi/KULLM-2-7B"
+    temperature: 4.0
+    alpha: 0.7
+  
+  # LoRA 설정
+  lora:
+    enabled: true
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.1
+    target_modules: ["q_proj", "v_proj", "k_proj", "o_proj"]
+
+# 학습 설정
+training:
+  # 기본 학습 파라미터
+  batch_size: 4
+  learning_rate: 2e-4
+  num_epochs: 3
+  warmup_steps: 100
+  weight_decay: 0.01
+  
+  # 그라디언트 설정
+  gradient_accumulation_steps: 4
+  max_grad_norm: 1.0
+  
+  # 체크포인트 설정
+  save_steps: 500
+  eval_steps: 500
+  logging_steps: 100
+  
+  # 조기 종료
+  early_stopping:
+    enabled: true
+    patience: 3
+    min_delta: 0.001
+
+# 평가 설정
+evaluation:
+  # 평가 메트릭
+  metrics:
+    - "bleu"
+    - "rouge"
+    - "bertscore"
+    - "medical_accuracy"
+  
+  # 의료 도메인 평가
+  medical_evaluation:
+    enabled: true
+    medical_terms_accuracy: true
+    consultation_quality: true
+    safety_check: true
+
+# 하드웨어 설정
+hardware:
+  device: "auto"  # auto, cuda, cpu
+  mixed_precision: true
+  dataloader_num_workers: 4
+  pin_memory: true
+
+# 로깅 및 모니터링
+logging:
+  # Weights & Biases
+  wandb:
+    enabled: true
+    project: "korean-medical-chatbot"
+    entity: null  # 사용자명 입력
+  
+  # TensorBoard
+  tensorboard:
+    enabled: true
+    log_dir: "logs/tensorboard"
+  
+  # 로그 레벨
+  level: "INFO"
+
+# 경로 설정
+paths:
+  output_dir: "outputs"
+  cache_dir: ".cache"
+  temp_dir: "temp"
