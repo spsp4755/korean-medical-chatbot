@@ -26,8 +26,8 @@ data:
 
 # 모델 설정
 model:
-  # 베이스 모델 선택
-  base_model_name: "beomi/KULLM-2-7B"  # 또는 "EleutherAI/polyglot-ko-12.8b"
+  # 베이스 모델 선택 (한국어 최적화 LLM)
+  base_model_name: "42dot/42dot_LLM-SFT-1.3B"  # SFT 특화 한국어 모델
   
   # 모델 저장 경로
   model_path: "models"
