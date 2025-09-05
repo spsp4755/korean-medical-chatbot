@@ -117,7 +117,6 @@ def main():
     # 테스트할 모델들 (베이스라인 후보 모델들)
     models = [
         "skt/kogpt2-base-v2",           # GPT-2 기반 (124M, ~500MB) ✅
-        "EleutherAI/polyglot-ko-1.3b",  # GPT-NeoX 기반 (1.3B, ~2.6GB) ⭐
         "42dot/42dot_LLM-SFT-1.3B"      # SFT 적용 (1.3B, ~2.6GB) ⭐
     ]
     
